@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "333133884860",
+    "firebase_url": "https://pong-may.firebaseio.com",
+    "project_id": "pong-may",
+    "storage_bucket": "pong-may.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333133884860:android:d1e440c40b97f3b4",
+        "android_client_info": {
+          "package_name": "com.com.waasche.games.pongmay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "333133884860-ne6qeku9pn0197g7bs1n4nbk1t7m57nf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.com.waasche.games.pongmay",
+            "certificate_hash": "9b81bcaeabdcac45ee421f97e53e260086712af1"
+          }
+        },
+        {
+          "client_id": "333133884860-jn7cchd12f4fvvd410t8ilqrkclrn2mt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRKSSc8Bund9fl0ZKRJ6IRNwdGAY5idI8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333133884860-jn7cchd12f4fvvd410t8ilqrkclrn2mt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
