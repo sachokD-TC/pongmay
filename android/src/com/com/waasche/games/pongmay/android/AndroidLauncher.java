@@ -3,6 +3,7 @@ package com.com.waasche.games.pongmay.android;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 import com.badlogic.gdx.Gdx;
@@ -13,11 +14,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesActivityResultCodes;
-import com.google.android.gms.games.RealTimeMultiplayerClient;
+import com.google.android.gms.games.*;
 import com.google.android.gms.games.multiplayer.realtime.*;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig.Builder;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.example.games.basegameutils.GameHelper;
@@ -45,6 +45,7 @@ public class AndroidLauncher extends AndroidApplication implements ActionResolve
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount account;
     private static final int RC_SELECT_PLAYERS = 9006;
+    private RealTimeMultiplayerClient mRealTimeMultiplayerClient;
 
     /* renamed from: AndroidLauncher$2 */
     class C02052 implements Runnable {
@@ -101,13 +102,14 @@ public class AndroidLauncher extends AndroidApplication implements ActionResolve
         startActivityForResult(
                 signInIntent, RC_SIGN_IN
         );
-        multiplayerClient = new MultiplayerClient(mGoogleSignInClient);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        this.pong = new Pong(this, multiplayerClient);
-        initialize(this.pong, config);
         this.gameHelper = new GameHelper(this, 1);
         this.gameHelper.enableDebugLog(true);
+        this.gameHelper.setGameContext(getContext());
         this.gameHelper.setup(new C04061());
+        multiplayerClient = new MultiplayerClient(gameHelper, mRealTimeMultiplayerClient);
+        this.pong = new Pong(this, multiplayerClient);
+        initialize(this.pong, config);
     }
 
     private void startSignIn() {
@@ -133,7 +135,8 @@ public class AndroidLauncher extends AndroidApplication implements ActionResolve
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
             try {
                 account = task.getResult(ApiException.class);
-                invitePlayers();
+                multiplayerClient.setAccount(account);
+                setupMultiplayer();
             } catch (ApiException e) {
                  System.out.print(e.getStatusCode());
             }
@@ -150,7 +153,6 @@ public class AndroidLauncher extends AndroidApplication implements ActionResolve
                 side = 1;
                 Toast.makeText(this, "TU EMPIEZAS", 0).show();
             }
-            this.pong.startOnlineGame(side);
         } else if (response == 0) {
             Games.RealTimeMultiplayer.leave(this.gameHelper.getApiClient(), this, this.mRoomId);
             getWindow().clearFlags(128);
@@ -161,17 +163,26 @@ public class AndroidLauncher extends AndroidApplication implements ActionResolve
     }
 
 
-    private void invitePlayers() {
-        // launch the player selection screen
-        // minimum: 1 other player; maximum: 3 other players
-        Games.getRealTimeMultiplayerClient(this, GoogleSignIn.getLastSignedInAccount(this))
-                .getSelectOpponentsIntent(1, 3, true)
-                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+    private void setupMultiplayer() {
+        // update the clients
+        mRealTimeMultiplayerClient = Games.getRealTimeMultiplayerClient(this, account);
+        gameHelper.setMultiplayer(mRealTimeMultiplayerClient);
+        // get the playerId from the PlayersClient
+        PlayersClient playersClient = Games.getPlayersClient(this, account);
+        playersClient.getCurrentPlayer().addOnSuccessListener(
+                new OnSuccessListener<Player>() {
                     @Override
-                    public void onSuccess(Intent intent) {
-                        startActivityForResult(intent, RC_SELECT_PLAYERS);
+                    public void onSuccess(Player player) {
+                        gameHelper.setPlayerId(player.getPlayerId());
                     }
-                });
+                }
+        ).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                gameHelper.setPlayerId("-1");
+            }
+        });
+        multiplayerClient.setRealTimeMultiplayerClient(mRealTimeMultiplayerClient);
     }
 
     public void signIn() {

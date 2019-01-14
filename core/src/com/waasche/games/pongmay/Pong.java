@@ -12,21 +12,25 @@ import com.waasche.games.pongmay.screens.ОnlineScreen;
 
 import java.util.Locale;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+
 public class Pong extends Game implements ApplicationListener {
+    public static final int HOST_ID = 0;
     public static ActionResolver actionResolver;
     public static final String PONG_BUNDLE_FILE_NAME = "i18n/pongbundle";
     private ОnlineScreen ОnlineScreen;
     public I18NBundle pongBundle;
     public AssetManager assetManager;
     private static Pong pongInstance;
+    private Multiplayer multiplayer;
 
     public Pong(ActionResolver actionResolver, Multiplayer multiplayer) {
-        multiplayer.connect();
+        this.multiplayer = multiplayer;
         this.actionResolver = actionResolver;
         pongInstance = this;
     }
 
-    public static Pong getInstance(){
+    public static Pong getInstance() {
         return pongInstance;
     }
 
@@ -36,8 +40,12 @@ public class Pong extends Game implements ApplicationListener {
         setScreen(new MainMenu(this));
     }
 
-    public void onLoad(){
+    public void onLoad() {
         pongBundle = loadTexts();
+    }
+
+    public Multiplayer getMultiplayer() {
+        return multiplayer;
     }
 
     private I18NBundle loadTexts() {
@@ -70,8 +78,14 @@ public class Pong extends Game implements ApplicationListener {
         final Pong pong = this;
         Gdx.app.postRunnable(new Runnable() {
             public void run() {
+                if (side == 0) {
+                    multiplayer.createRoom();
+                    delay(20000);
+                    multiplayer.joinRoom();
+                }
                 Pong.this.ОnlineScreen = new ОnlineScreen(pong, side);
                 Pong.this.setScreen(Pong.this.ОnlineScreen);
+
             }
         });
     }

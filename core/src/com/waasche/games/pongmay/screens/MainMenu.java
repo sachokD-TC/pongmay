@@ -100,10 +100,10 @@ public class MainMenu implements Screen {
         exitButtonStyle.font = this.skin.getFont("aldrich-rus");
         this.skin.add("exit", exitButtonStyle);
         new LabelStyle().font = this.skin.getFont("aldrich-rus");
-        TextButton singleButton = new TextButton( com.waasche.games.pongmay.resources.Text.get("Player1"), textButtonStyle);
-        singleButton.setBounds(450.0f, 310.0f, 250.0f, 80.0f);
-        TextButton multiButton = new TextButton(com.waasche.games.pongmay.resources.Text.get("Player2"), textButtonStyle);
-        multiButton.setBounds(450.0f, 210.0f, 250.0f, 80.0f);
+        TextButton multiCreateButton = new TextButton( com.waasche.games.pongmay.resources.Text.get("Player1"), textButtonStyle);
+        multiCreateButton.setBounds(450.0f, 310.0f, 250.0f, 80.0f);
+        TextButton multiJoinButton = new TextButton(com.waasche.games.pongmay.resources.Text.get("Player2"), textButtonStyle);
+        multiJoinButton.setBounds(450.0f, 210.0f, 250.0f, 80.0f);
         TextButton wallButton = new TextButton(com.waasche.games.pongmay.resources.Text.get("WALL"), textButtonStyle);
         wallButton.setBounds(450.0f, 110.0f, 250.0f, 80.0f);
         TextButton exitButton = new TextButton(com.waasche.games.pongmay.resources.Text.get("EXIT"), exitButtonStyle);
@@ -126,23 +126,23 @@ public class MainMenu implements Screen {
             handButton.setChecked(false);
         }
         handButton.setBounds(50.0f, 20.0f, 50.0f, 50.0f);
-        this.stage.addActor(singleButton);
-        this.stage.addActor(multiButton);
+        this.stage.addActor(multiCreateButton);
+        this.stage.addActor(multiJoinButton);
         this.stage.addActor(wallButton);
         this.stage.addActor(exitButton);
         this.stage.addActor(rankingButtonWallMode);
         this.stage.addActor(soundButton);
         this.stage.addActor(handButton);
         final Pong pong = g;
-        singleButton.addListener(new ChangeListener() {
+        multiCreateButton.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                pong.setScreen(new GameScreen(pong, false));
+                pong.startOnlineGame(0);
             }
         });
 //        pong = g;
-        multiButton.addListener(new ChangeListener() {
+        multiJoinButton.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                pong.setScreen(new GameScreen(pong, true));
+                pong.startOnlineGame(1);
             }
         });
 //        pong = g;

@@ -20,12 +20,14 @@ import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Games.GamesOptions;
 import com.google.android.gms.games.GamesActivityResultCodes;
+import com.google.android.gms.games.RealTimeMultiplayerClient;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.Plus.PlusOptions;
+
 import java.util.ArrayList;
 
 public class GameHelper implements ConnectionCallbacks, OnConnectionFailedListener {
@@ -64,6 +66,25 @@ public class GameHelper implements ConnectionCallbacks, OnConnectionFailedListen
     TurnBasedMatch mTurnBasedMatch;
     boolean mUserInitiatedSignIn = false;
 
+    private Context gameContext;
+
+    public String getRoomId() {
+        return this.roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    private String roomId;
+    private RealTimeMultiplayerClient mRealTimeMultiplayerClient;
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    private String playerId;
+
     /* renamed from: com.google.example.games.basegameutils.GameHelper$1 */
     class C03051 implements Runnable {
         C03051() {
@@ -72,6 +93,14 @@ public class GameHelper implements ConnectionCallbacks, OnConnectionFailedListen
         public void run() {
             GameHelper.this.notifyListener(false);
         }
+    }
+
+    public void setPlayerId(String playerId){
+        this.playerId = playerId;
+    }
+
+    public void setMultiplayer(RealTimeMultiplayerClient mRealTimeMultiplayerClient){
+        this.mRealTimeMultiplayerClient = mRealTimeMultiplayerClient;
     }
 
     public interface GameHelperListener {
@@ -651,5 +680,17 @@ public class GameHelper implements ConnectionCallbacks, OnConnectionFailedListen
     public void setConnectOnStart(boolean connectOnStart) {
         debugLog("Forcing mConnectOnStart=" + connectOnStart);
         this.mConnectOnStart = connectOnStart;
+    }
+
+    public Activity getmActivity() {
+        return mActivity;
+    }
+
+    public Context getGameContext() {
+        return gameContext;
+    }
+
+    public void setGameContext(Context gameContext) {
+        this.gameContext = gameContext;
     }
 }

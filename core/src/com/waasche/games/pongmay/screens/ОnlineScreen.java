@@ -203,13 +203,10 @@ public class ОnlineScreen implements Screen {
             this.shapeRenderer.setColor(1.0f, 0.0f, 0.0f, 1.0f);
         }
         this.shapeRenderer.rect(this.player2.getBody().getPosition().x - this.player2.width, this.player2.getBody().getPosition().y - this.player2.height, this.player2.width * 2.0f, this.player2.height * 2.0f);
-        Pong pong;
         if (this.side.intValue() == 0) {
-            pong = this.game;
-            Pong.actionResolver.sendPos(this.player.getBody().getPosition().y, 0.0f);
+            this.game.getMultiplayer().sendCoordinatesOfRacket(new float[]{this.player.getBody().getPosition().y, this.player.getBody().getPosition().x});
         } else {
-            pong = this.game;
-            Pong.actionResolver.sendPos(this.player2.getBody().getPosition().y, 0.0f);
+            this.game.getMultiplayer().sendCoordinatesOfRacket(new float[]{this.player2.getBody().getPosition().y, this.player2.getBody().getPosition().x});
         }
         this.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         ShapeRenderer shapeRenderer = this.shapeRenderer;
